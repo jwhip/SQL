@@ -1,0 +1,62 @@
+# For this project, I downloaded Spotify data from Kaggle.
+# Then I created a table to insert Spotify data into.
+# Finally, I performed analytics on the data using SQL. 
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+song_key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+song_mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness decimal(8,7) NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL );
+
+#Then I inserted the Spotify Data .csv into the table.
+
+#Next, I explored the data using the following SQL.
+
+--What is the average danceability by artist and track? 
+SELECT artist_name, track_name, avg(popularity), 
+ROUND(avg(danceability),2) AS avg_danceability, 
+ROUND(avg(energy),2) AS avg_energy
+FROM Spotifydata
+GROUP BY artist_name, track_name;
+
+--Who are the top 10 artists based on popularity? 
+SELECT artist_name, popularity
+FROM SpotifyData
+ORDER BY popularity desc
+LIMIT 10;
+
+--What artist released the longest song? 
+SELECT artist_name, track_name, max(duration_ms)/1000 AS duration_sec
+FROM Spotifydata;
+
+--What's the average danceability for the 10 most popular songs?
+SELECT ROUND(avg(danceability),2) AS avg_danceabililty
+FROM Spotifydata
+WHERE danceability IN (SELECT danceability FROM SpotifyData ORDER BY popularity desc LIMIT 10);
+
+--Which artists had the most top 50 hits in 2021?
+SELECT artist_name, count(artist_name)
+FROM Spotifydata
+GROUP BY artist_name
+ORDER BY count(artist_name) desc
+LIMIT 3;
+
+--How many of the top 50 hits are written in a major key?
+SELECT count(song_mode)
+FROM Spotifydata
+WHERE song_mode = 1;
