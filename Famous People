@@ -1,0 +1,70 @@
+--Create a database of actors and movies.
+
+CREATE TABLE persons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullname TEXT,
+    birthyear INTEGER);
+    
+INSERT INTO persons (fullname, birthyear) VALUES ("Anne Hathaway", 1982);
+INSERT INTO persons (fullname, birthyear) VALUES ("Robert Schwartzman", 1982);
+INSERT INTO persons (fullname, birthyear) VALUES ("Chris Pine", 1980);
+INSERT INTO persons (fullname, birthyear) VALUES ("Nia Vardalos", 1962);
+INSERT INTO persons (fullname, birthyear) VALUES ("John Corbett", 1961);
+INSERT INTO persons (fullname, birthyear) VALUES ("Jennifer Lawrence", 1990);
+INSERT INTO persons (fullname, birthyear) VALUES ("Josh Hutcherson", 1992);
+INSERT INTO persons (fullname, birthyear) VALUES ("Meryl Streep", 1949);
+INSERT INTO persons (fullname, birthyear) VALUES ("Pierce Brosnan", 1953);
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    female_lead INTEGER,
+    male_lead INTEGER,
+    released INTEGER,
+    sequel_id INTEGER);
+
+INSERT INTO movies VALUES (1, "Princess Diaries", 1, 2, 2001, 2);
+INSERT INTO movies VALUES (2, "Princess Diaries 2: Royal Engagement", 1, 3, 2004, NULL);
+INSERT INTO movies VALUES (3, "My Big Fat Greek Wedding", 4, 5, 2002, 4);
+INSERT INTO movies VALUES (4, "My Big Fat Greek Wedding 2", 4, 5, 2016, NULL);
+INSERT INTO movies VALUES (5, "The Hunger Games", 6, 7, 2012, 6);
+INSERT INTO movies VALUES (6, "The Hunger Games: Catching Fire", 6, 7, 2013, NULL);
+INSERT INTO movies VALUES (7, "Mamma Mia!", 8, 9, 2008, 8);
+INSERT INTO movies VALUES (8, "Mamma Mia! Here We Go Again", 8, 9, 2018, NULL);
+
+CREATE table costars (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person1_id INTEGER,
+    person2_id INTEGER);
+
+INSERT INTO costars (person1_id, person2_id) VALUES (1, 2);
+INSERT INTO costars (person1_id, person2_id) VALUES (1, 3);
+INSERT INTO costars (person1_id, person2_id) VALUES (4, 5);
+INSERT INTO costars (person1_id, person2_id) VALUES (6, 7);
+INSERT INTO costars (person1_id, person2_id) VALUES (8, 9);
+
+--Which actresses are in each movie?
+SELECT m.title, p.fullname AS actress
+FROM movies m
+JOIN persons p
+ON m.female_lead = p.id;
+
+--Which actors & actresses are costars?
+SELECT a.fullname AS lead, b.fullname AS costar
+FROM costars c
+JOIN persons a
+ON a.id = c.person1_id
+JOIN persons b
+ON b.id = c.person2_id;
+
+--What are the sequels to each movie?
+SELECT movies.title, sequel.title AS sequel
+FROM movies
+JOIN movies AS sequel
+ON movies.sequel_id=sequel.id;
+
+--How many years passed between the original and sequel for each movie?
+SELECT movies.title, sequel.title AS sequel, (sequel.released-movies.released) AS timetosequel
+FROM movies
+JOIN movies AS sequel
+ON movies.sequel_id=sequel.id
+ORDER BY timetosequel desc;
